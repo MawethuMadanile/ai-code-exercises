@@ -223,6 +223,11 @@ class TaskPriorityTest(unittest.TestCase):
         default_top_tasks = get_top_priority_tasks(tasks)
         self.assertEqual(len(default_top_tasks), 5)  # Default limit is 5
 
+    def test_overdue_task_gets_maximum_date_bonus(self):
+        task = Task("Overdue", priority=TaskPriority.MEDIUM)
+        task.due_date = datetime.now() - timedelta(days=3)
+        score = calculate_task_score(task)
+        assert score == (2 * 10) + 35 + 5  # base + overdue + recency boost
 
 if __name__ == '__main__':
     unittest.main()
